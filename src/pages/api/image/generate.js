@@ -48,7 +48,7 @@ export default async function handler(req, res) {
     });
 
   // Python 파일 실행
-  const pythonProcess = spawn('python', ['/home/opc/molaroid/src/pages/api/image/moraloidCore.py']);
+  const pythonProcess = spawn('python', ['/home/opc/moraloid/server/moraloidCore.py']);
 
   // 자식 프로세스가 끝나면 콜백 호출
   pythonProcess.on('exit', (code) => {
@@ -99,7 +99,7 @@ export default async function handler(req, res) {
     //    res.end(data);
     // });
     
-    return res.status(200).json({ message: 'Image uploaded successfully' });
+    //return res.status(200).json({ message: 'Image uploaded successfully' });
   })
   pythonProcess.stderr.on('data', (data) => {
       console.error(`stderr: ${data}`);
