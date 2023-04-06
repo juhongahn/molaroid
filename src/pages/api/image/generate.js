@@ -52,7 +52,7 @@ export default async function handler(req, res) {
 
   // 자식 프로세스가 끝나면 콜백 호출
   pythonProcess.on('exit', (code) => {
-
+    
     const boundary = 'myboundary';
     res.setHeader('Content-Type', `multipart/mixed; boundary="${boundary}"`);
 

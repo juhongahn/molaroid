@@ -46,19 +46,27 @@ export default function UploadImage() {
             method: 'POST',
             body: formData,
         })
-            .then(response => {
-            console.log(response)
+        .then(response => {
             if (response.ok) { 
-                return response;
+              return response;
             }
             throw new Error('Network response was not ok.');
-        })
-            .then(data => {
-                console.log(data); // 서버에서 전달한 응답 데이터
-            })
-            .catch(error => {
-                console.error('There was a problem with the fetch operation:', error);
-            });
+          })
+          .then(async response => {
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('multipart/mixed')) {
+              const boundary = contentType.split('boundary=')[1];
+              const body = await response.text();
+              const parts = body.split(`--${boundary}`);
+              const inputImage = parts[2].substring(4);
+              const outputAudio = parts[6].substring(4);
+              const outputText = parts[8].substring(4);
+              console.log(inputImage, outputAudio, outputText);
+            }
+          })
+          .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+          });
     }
 
     return (
