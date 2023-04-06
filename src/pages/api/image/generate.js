@@ -48,7 +48,7 @@ export default async function handler(req, res) {
     });
 
   // Python 파일 실행
-  const pythonProcess = spawn('python', ['moraloidCore.py']);
+  const pythonProcess = spawn('python', ['/home/opc/molaroid/src/pages/api/image/moraloidCore.py']);
   
   pythonProcess.stderr.on('data', (data) => {
       console.error(`stderr: ${data}`);
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
       console.log(`child process exited with code ${code}`);
   });
   
-  fs.readFile(postDirName, (err, data) => {
+  fs.readFile(postDirName + '/input.jpg', (err, data) => {
     if (err) {
       console.error(err);
       return;
