@@ -1,11 +1,15 @@
 import multer from 'multer';
+import fs from 'fs';
+import {spawn} from 'child_process'
+
+
 // Unexpected end of form 방지.
 export const config = {
     api: {
       bodyParser: false
     }
   }
-
+let postDirName;
 // multer 미들웨어 설정
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -18,14 +22,16 @@ const storage = multer.diskStorage({
       }
       // 마지막 숫자보다 1 큰 경로를 만듦
       const newDir = `${postsDir}/${dirNum}`;
+      postDirName = newDir;
       fs.mkdirSync(newDir);
       cb(null, newDir);
     },
     filename: function (req, file, cb) {
       cb(null, 'input.jpg');
     }
-  });
-  const upload = multer({ storage: storage });
+});
+  
+const upload = multer({ storage: storage });
 
 export default async function handler(req, res) {
     
@@ -38,16 +44,26 @@ export default async function handler(req, res) {
             return;
           }
           resolve();
-        });``
+        });
     });
 
-    // Python 파일 실행
-    const pythonProcess = spawn('python', ['/home/opc/moraloid/server/moraloidCore.py']);
-    pythonProcess.stderr.on('data', (data) => {
-        console.error(`stderr: ${data}`);
-    });
-    pythonProcess.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
-    });
-    return res.status(200).json({ message: 'Image uploaded successfully' });
+  // Python 파일 실행
+  const pythonProcess = spawn('python', ['moraloidCore.py']);
+  
+  pythonProcess.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`);
+  });
+  pythonProcess.on('close', (code) => {
+      console.log(`child process exited with code ${code}`);
+  });
+  
+  fs.readFile(postDirName, (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    console.log(data.toString());
+  });
+  
+  return res.status(200).json({ message: 'Image uploaded successfully' });
 }
