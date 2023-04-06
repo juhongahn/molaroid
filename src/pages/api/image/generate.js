@@ -58,18 +58,18 @@ export default async function handler(req, res) {
 
     const inputImagePath = postDirName + '/input.jpg';
     const outputTextPath = postDirName + '/output.midi';
-    const outputAudioPath = postDirName + '/output.json';
+    const outputAudioPath = postDirName + '/output.txt';
 
     Promise.all([
       fs.promises.readFile(inputImagePath),
       fs.promises.readFile(outputTextPath),
       fs.promises.readFile(outputAudioPath),
-    ]).then(([inputImagem, outputText, outputAudio]) => {
+    ]).then(([inputImage, outputText, outputAudio]) => {
       const responseBody = [
         `--${boundary}`,
         'Content-Type: image/jpeg',
         '',
-        inputImagem,
+        inputImage,
         `--${boundary}`,
         'Content-Type: audio/mpeg',
         '',
@@ -81,7 +81,7 @@ export default async function handler(req, res) {
         `--${boundary}--`
       ].join('\r\n');
 
-      res.end(responseBody);
+      res.status(200).end(responseBody);
     }).catch((err) => {
       console.error(err);
       res.statusCode = 500;
