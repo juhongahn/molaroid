@@ -49,21 +49,66 @@ export default async function handler(req, res) {
 
   // Python 파일 실행
   const pythonProcess = spawn('python', ['/home/opc/molaroid/src/pages/api/image/moraloidCore.py']);
+
+  // 자식 프로세스가 끝나면 콜백 호출
+  pythonProcess.on('exit', (code) => {
+
+    const boundary = 'myboundary';
+    res.setHeader('Content-Type', `multipart/mixed; boundary="${boundary}"`);
+
+    const inputImagePath = postDirName + '/input.jpg';
+    const outputTextPath = postDirName + '/output.midi';
+    const outputAudioPath = postDirName + '/output.json';
+
+    Promise.all([
+      fs.promises.readFile(inputImagePath),
+      fs.promises.readFile(outputTextPath),
+      fs.promises.readFile(outputAudioPath),
+    ]).then(([inputImagem, outputText, outputAudio]) => {
+      const responseBody = [
+        `--${boundary}`,
+        'Content-Type: image/jpeg',
+        '',
+        inputImagem,
+        `--${boundary}`,
+        'Content-Type: audio/mpeg',
+        '',
+        outputAudio,
+        `--${boundary}`,
+        'Content-Type: text/plain',
+        '',
+        outputText,
+        `--${boundary}--`
+      ].join('\r\n');
+
+      res.end(responseBody);
+    }).catch((err) => {
+      console.error(err);
+      res.statusCode = 500;
+      res.end();
+    });
   
+    // fs.readFile(postDirName + '/input.jpg', (err, data) => {
+    //   if (err) {
+    //     console.error(err);
+    //     return;
+    //   }
+    //    // MIME 타입 설정
+    //    res.writeHead(200, {'Content-Type': 'image/jpeg'});
+    //    // 파일 내용 전송
+    //    res.end(data);
+    // });
+    
+    return res.status(200).json({ message: 'Image uploaded successfully' });
+  })
   pythonProcess.stderr.on('data', (data) => {
       console.error(`stderr: ${data}`);
   });
   pythonProcess.on('close', (code) => {
       console.log(`child process exited with code ${code}`);
   });
+
   
-  fs.readFile(postDirName + '/input.jpg', (err, data) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log(data.toString());
-  });
   
-  return res.status(200).json({ message: 'Image uploaded successfully' });
+  
 }
