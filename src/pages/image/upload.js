@@ -59,9 +59,9 @@ export default function UploadImage() {
 			  const reader = new FileReader();
 			  reader.onload = function() {
 				const parts = reader.result.split('\r\n--myboundary\r\n');
-				const inputImage = parts[1];
-				const outputAudio = parts[3];
-				const outputText = parts[5];
+				const inputImage = parts[0];
+				const outputAudio = parts[1];
+				const outputText = parts[2];
 			  
 				// 받은 데이터 처리
 				console.log(inputImage)

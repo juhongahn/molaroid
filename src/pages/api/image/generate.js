@@ -57,16 +57,15 @@ export default async function handler(req, res) {
     res.setHeader('Content-Type', `multipart/mixed; boundary="${boundary}"`);
 
     const inputImagePath = postDirName + '/input.jpg';
-    const outputTextPath = postDirName + '/output.midi';
-    const outputAudioPath = postDirName + '/output.txt';
-
+    const outputAudioPath = postDirName + '/output.midi';
+    const outputTextPath = postDirName + '/output.txt';
+    outputAudioPath
     Promise.all([
       fs.promises.readFile(inputImagePath),
       fs.promises.readFile(outputTextPath),
       fs.promises.readFile(outputAudioPath),
     ]).then(([inputImage, outputText, outputAudio]) => {
       const responseBody = [
-        `--${boundary}`,
         'Content-Type: image/jpeg',
         '',
         inputImage,
