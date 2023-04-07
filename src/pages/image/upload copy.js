@@ -47,10 +47,10 @@ export default function UploadImage() {
         }
         formData.append('image', files[0]);
 		setIsLoading(true);
-        const response = await fetch('/api/image/generate', {
+        fetch('/api/image/generate', {
             method: 'POST',
             body: formData,
-        });
+        })
         .then(response => {
             if (response.ok) { 
 				return response.text();
