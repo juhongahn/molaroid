@@ -40,25 +40,33 @@ export default function UploadImage() {
     };
 
     const handleSubmit = async () => {
+		setIsLoading(true);
         const formData = new FormData();
         if (files.length <= 0) {
             alert('사진을 업로드 해주세요');
             return;
         }
         formData.append('image', files[0]);
-		setIsLoading(true);
-        const response = await fetch('/api/image/generate', {
-            method: 'POST',
-            body: formData,
-        });
 
-        if (response.ok) {
-            const data = await response.json();
-            setGenImage(`data:image/jpeg;base64,${data.image}`);
-            setGenAudio(`data:audio/mpeg;base64,${data.audio}`);
-            setGenText(data.text);
-        } 
+        try {
+            const response = await fetch('/api/image/generate', {
+                method: 'POST',
+                body: formData,
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                setGenImage(`data:image/jpeg;base64,${data.image}`);
+                setGenAudio(`data:audio/mpeg;base64,${data.audio}`);
+                setGenText(data.text);
+            } else {
+                throw new Error("처리중 에러가 발생했습니다.")
+            } 
         
+        } catch (err) {
+            alert(err);
+        }
+                
     }
 
     return (
@@ -93,10 +101,13 @@ export default function UploadImage() {
 				<div className='spinner-container'>
 					<CircularProgress/>
 				</div>
-			}
-			{genImage && <img src={genImage} />}
-			{genAudio && <audio src={genAudio} />}
-			{genText && <p> {genText} </p>}
+            }
+            
+            <ContentCard
+                imageSrc={genImage}
+                audioSrc={genAudio}
+                text={genText}
+            />
 			
             <style jsx>{`
                 .card {
