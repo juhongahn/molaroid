@@ -34,21 +34,7 @@ export default function RecipeReviewCard() {
 
   return (
 
-    <Card sx={{ maxWidth: 480 }}>
-      <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title="안주홍"
-        subheader="September 14, 2016"
-      />
+    <Card >
       <CardMedia
         component="img"
         height="194"
@@ -61,7 +47,8 @@ export default function RecipeReviewCard() {
       />
       <audio
         controls
-        src="/media/cc0-audio/t-rex-roar.mp3">
+        src="/media/cc0-audio/t-rex-roar.mp3"
+        className='audio'>
             <a href="/media/cc0-audio/t-rex-roar.mp3">
                 Download audio
             </a>
@@ -81,6 +68,13 @@ export default function RecipeReviewCard() {
           <ShareIcon />
         </IconButton>
       </CardActions>
+      <style jsx>{`
+        .audio{
+          width: 100%;
+          background-color: #f1f3f4;
+        }
+        
+        `}</style>
     </Card>
   );
 }

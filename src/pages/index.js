@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import ContentCard from '@/components/ContentCard';
 import Grid from '@mui/material/Grid'
+import Container from '@mui/material/Container'
 import { useState } from 'react';
 
 export default function Home() {
@@ -13,7 +14,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Grid
+      {/* <Grid
         container
         direction="row"
         justifyContent="center"
@@ -23,8 +24,10 @@ export default function Home() {
         <Grid item>
           <ContentCard />
         </Grid>
-      </Grid>
-
+      </Grid> */}
+      <Container maxWidth="sm">
+        <ContentCard />
+      </Container>
     </>
   )
 }

@@ -1,14 +1,18 @@
 import { useState, useRef } from "react";
-import { Container } from "@mui/material";
+import { Backdrop, Container } from "@mui/material";
 import ImagePreView from "@/components/image/ImagePreview";
 import CircularProgress from '@mui/material/CircularProgress';
 
 export default function UploadImage() {
 
-    const [files, setFiles] = useState([]);
+	const [files, setFiles] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const [genImage, setGenImage] = useState(null);
+	const [genAudio, setGenAudio] = useState(null);
+	const [genText, setGenText] = useState(null);
     const fileInputRef = useRef();
     const dragAreaRef = useRef();
-    const [isLoading, setIsLoading] = useState(false);
+
     const delImage = () => setFiles([]);
     
     const handleFileUpload = (event) => {
@@ -64,14 +68,13 @@ export default function UploadImage() {
 				const outputText = parts[2];
 			  
 				// 받은 데이터 처리
-				console.log(inputImage)
-				console.log(typeof inputImage)
-				console.log(outputAudio)
-				console.log(typeof outputAudio)
-				console.log(outputText)
-				console.log(typeof outputText)
+				console.log(inputImage.split('\r\n')[1])
+				setGenImage(URL.createObjectURL(inputImage.split('\r\n')[1]))
+				console.log(outputAudio.split('\r\n')[1])
+				console.log(outputText.split('\r\n')[1])
 			  }
 			  reader.readAsText(data);
+			  setIsLoading(false);
           })
           .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
@@ -101,16 +104,18 @@ export default function UploadImage() {
 						ref={fileInputRef}/>
 				</div>
 
-				<div className="container">
+				<div className='container'>
 					{files.length > 0 && <ImagePreView files={files} delImage={ delImage } />}
 				</div>
 			</div>
 
 			{isLoading &&
-				<div className="spinner-container">
+				<div className='spinner-container'>
 					<CircularProgress/>
 				</div>
 			}
+			{genImage && <img src={genImage} width={100} />}
+			
             <style jsx>{`
                 .card {
                     width: 100%;
@@ -221,7 +226,6 @@ export default function UploadImage() {
 					top: 50%;
 					left: 50%;
 					transform: translate(-50%, -50%);
-					
 				}
                                 
             `}</style>
