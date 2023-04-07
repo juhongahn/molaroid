@@ -1,14 +1,14 @@
 import { useState, useRef } from "react";
 import { Container } from "@mui/material";
 import ImagePreView from "@/components/image/ImagePreview";
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function UploadImage() {
 
     const [files, setFiles] = useState([]);
     const fileInputRef = useRef();
     const dragAreaRef = useRef();
-
+    const [isLoading, setIsLoading] = useState(false);
     const delImage = () => setFiles([]);
     
     const handleFileUpload = (event) => {
@@ -42,27 +42,36 @@ export default function UploadImage() {
             return;
         }
         formData.append('image', files[0]);
+
+		setIsLoading(true);
+		
         fetch('/api/image/generate', {
             method: 'POST',
             body: formData,
         })
         .then(response => {
             if (response.ok) { 
-              return response;
+				return response.blob();
             }
             throw new Error('Network response was not ok.');
           })
-          .then(async response => {
-            const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('multipart/mixed')) {
-              const boundary = contentType.split('boundary=')[1];
-              const body = await response.text();
-              const parts = body.split(`--${boundary}`);
-              const inputImage = parts[2].substring(4);
-              const outputAudio = parts[6].substring(4);
-              const outputText = parts[8].substring(4);
-              console.log(inputImage, outputAudio, outputText);
-            }
+          .then( data  => {
+			  const reader = new FileReader();
+			  reader.onload = function() {
+				const parts = reader.result.split('\r\n--myboundary\r\n');
+				const inputImage = parts[1];
+				const outputAudio = parts[3];
+				const outputText = parts[5];
+			  
+				// 받은 데이터 처리
+				console.log(inputImage)
+				console.log(typeof inputImage)
+				console.log(outputAudio)
+				console.log(typeof outputAudio)
+				console.log(outputText)
+				console.log(typeof outputText)
+			  }
+			  reader.readAsText(data);
           })
           .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
@@ -71,31 +80,37 @@ export default function UploadImage() {
 
     return (
         <Container maxWidth="sm">
-        <div className="card">
-            <div className="top">
-                <p>사진을 여기에 끌어다 놓으세요</p>
-                <button type="button" onClick={handleSubmit}>업로드</button>
-            </div>
-            <div className="drag-area"
-                onDragOver={imgDragOverHandler}
-                onDragLeave={imgDragLeaveHandler}
-                onDrop={imgDropHandler}
-                ref={dragAreaRef}
-            >
-                <span className="visible">
-                    끌어다 놓거나
-                    <span className="select" role="button" onClick={openFileUpload}>컴퓨터에서 선택</span>
-                </span>
-                <span className="on-drop">Drop images here</span>
-                <input name="file" type="file" className="file"
-                    onChange={handleFileUpload}
-                    ref={fileInputRef}/>
-            </div>
+			<div className="card">
+				<div className="top">
+					<p>사진을 여기에 끌어다 놓으세요</p>
+					<button type="button" onClick={handleSubmit}>업로드</button>
+				</div>
+				<div className="drag-area"
+					onDragOver={imgDragOverHandler}
+					onDragLeave={imgDragLeaveHandler}
+					onDrop={imgDropHandler}
+					ref={dragAreaRef}
+				>
+					<span className="visible">
+						끌어다 놓거나
+						<span className="select" role="button" onClick={openFileUpload}>컴퓨터에서 선택</span>
+					</span>
+					<span className="on-drop">Drop images here</span>
+					<input name="file" type="file" className="file"
+						onChange={handleFileUpload}
+						ref={fileInputRef}/>
+				</div>
 
-            <div className="container">
-                {files.length > 0 && <ImagePreView files={files} delImage={ delImage } />}
-            </div>
-            </div>
+				<div className="container">
+					{files.length > 0 && <ImagePreView files={files} delImage={ delImage } />}
+				</div>
+			</div>
+
+			{isLoading &&
+				<div className="spinner-container">
+					<CircularProgress/>
+				</div>
+			}
             <style jsx>{`
                 .card {
                     width: 100%;
@@ -182,7 +197,6 @@ export default function UploadImage() {
                     justify-content: flex-start;
                     align-items: flex-start;
                     flex-wrap: wrap;
-                    max-height: 200px;
                     overflow-y: auto;
                     margin-top: 10px;
                 }
@@ -202,6 +216,13 @@ export default function UploadImage() {
                 .card .drag-area.dragover .visible {
                     display: none;
                 }
+				.spinner-container {
+					position: fixed;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					
+				}
                                 
             `}</style>
             </Container>

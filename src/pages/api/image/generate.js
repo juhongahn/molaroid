@@ -87,19 +87,6 @@ export default async function handler(req, res) {
       res.statusCode = 500;
       res.end();
     });
-  
-    // fs.readFile(postDirName + '/input.jpg', (err, data) => {
-    //   if (err) {
-    //     console.error(err);
-    //     return;
-    //   }
-    //    // MIME 타입 설정
-    //    res.writeHead(200, {'Content-Type': 'image/jpeg'});
-    //    // 파일 내용 전송
-    //    res.end(data);
-    // });
-    
-    //return res.status(200).json({ message: 'Image uploaded successfully' });
   })
   pythonProcess.stderr.on('data', (data) => {
       console.error(`stderr: ${data}`);

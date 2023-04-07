@@ -6,7 +6,6 @@ export default function ImagePreView(props) {
             <style jsx>{`
                 .image {
                     width: 100%;
-                    margin-right: 15px;
                     height: auto;
                     position: relative;
                     margin-bottom: 8px;
