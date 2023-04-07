@@ -74,6 +74,7 @@ export default function UploadImage() {
 				console.log(outputText.split('\r\n')[1])
 			  }
 			  reader.readAsText(data);
+			  setFiles([]);
 			  setIsLoading(false);
           })
           .catch(error => {

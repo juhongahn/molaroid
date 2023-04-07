@@ -55,10 +55,10 @@ export default async function handler(req, res) {
     
     const boundary = 'myboundary';
     res.setHeader('Content-Type', `multipart/mixed; boundary="${boundary}"`);
-
-    const inputImagePath = postDirName + '/input.jpg';
-    const outputAudioPath = postDirName + '/output.midi';
-    const outputTextPath = postDirName + '/output.txt';
+    const postsDir = '/home/opc/moraloid/posts_test/1';
+    const inputImagePath = postsDir + '/input.jpg';
+    const outputAudioPath = postsDir + '/output.midi';
+    const outputTextPath = postsDir + '/output.txt';
     outputAudioPath
     Promise.all([
       fs.promises.readFile(inputImagePath),
