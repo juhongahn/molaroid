@@ -95,8 +95,8 @@ export default function UploadImage() {
 				</div>
 			}
 			{genImage && <img src={genImage} />}
-			{genAudio && <img src={genAudio} />}
-			{genText && <img src={genText} />}
+			{genAudio && <audio src={genAudio} />}
+			{genText && <p> {genText} </p>}
 			
             <style jsx>{`
                 .card {
