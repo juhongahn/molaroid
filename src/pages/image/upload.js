@@ -55,27 +55,28 @@ export default function UploadImage() {
         })
         .then(response => {
             if (response.ok) { 
-				return response.blob();
+				return response.text();
             }
             throw new Error('Network response was not ok.');
           })
           .then( data  => {
-			  const reader = new FileReader();
-			  reader.onload = function() {
-				const parts = reader.result.split('\r\n--myboundary\r\n');
-				const inputImage = parts[0];
-				const outputAudio = parts[1];
-				const outputText = parts[2];
-			  
-				// 받은 데이터 처리
-				console.log(inputImage.split('\r\n')[1])
-				setGenImage(URL.createObjectURL(inputImage.split('\r\n')[1]))
-				console.log(outputAudio.split('\r\n')[1])
-				console.log(outputText.split('\r\n')[1])
-			  }
-			  reader.readAsText(data);
-			  setFiles([]);
-			  setIsLoading(false);
+		const boundary = '\r\n--myboundary\r\n';
+		const parts = data.split(boundary);
+		const inputImagePart = parts[1];
+		const outputAudioPart = parts[2];
+		const outputTextPart = parts[3];
+		console.log(inputImagePart);
+		console.log(outputAudioPart);
+		console.log(outputTextPart);
+		console.log(parts);	
+	
+		const inputImageBlob = new Blob([inputImagePart], {type: 'image/jpeg'});
+		const outputAudioBlob = new Blob([outputAudioPart], {type: 'audio/mpeg'});
+		const outputText = outputTextPart.trim();
+		const imageSrc = URL.createObjectURL(inputImageBlob);
+		const audioSrc = URL.createObjectURL(outputAudioBlob);
+		
+		setGenImage(imageSrc);
           })
           .catch(error => {
             console.error('There was a problem with the fetch operation:', error);
