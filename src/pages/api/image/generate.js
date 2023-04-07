@@ -53,7 +53,7 @@ export default async function handler(req, res) {
 
   pythonProcess.on('exit', (code) => {
     const inputImagePath = postDirName + '/input.jpg';
-    const outputAudioPath = postDirName + '/output.mp3';
+    const outputAudioPath = postDirName + '/output.midi';
     const outputTextPath = postDirName + '/output.txt';
 
     const imageData = fs.readFileSync(inputImagePath);
@@ -70,7 +70,7 @@ export default async function handler(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(response));
   })
-  
+
   pythonProcess.stderr.on('data', (data) => {
     console.error(`stderr: ${data}`);
 });
