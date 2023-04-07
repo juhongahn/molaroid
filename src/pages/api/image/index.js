@@ -13,14 +13,12 @@ export default function handler(req, res) {
 
         const dirPath = path.join(postsDir, dir);
         const inputImagePath = dirPath + '/input.jpg';
-        const outputTextPath = dirPath + '/output.txt';
 
         const imageData = fs.readFileSync(inputImagePath);
         const textData = fs.readFileSync(outputTextPath, 'utf-8');
     
         const multiFiles = {
             image: imageData.toString('base64'),
-            text: textData,
         };
         files.push(multiFiles);
     });
