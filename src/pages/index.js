@@ -2,10 +2,16 @@ import Head from 'next/head'
 import ContentCard from '@/components/ContentCard';
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
-
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/api/image');
+      console.log(response.json());  
+    }
+    fetchData();
+  }, [])
   return (
     <>
       <Head>
