@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Backdrop, Container } from "@mui/material";
 import ImagePreView from "@/components/image/ImagePreview";
 import CircularProgress from '@mui/material/CircularProgress';
+import ContentCard from "@/components/ContentCard";
 
 export default function UploadImage() {
 
@@ -65,6 +66,8 @@ export default function UploadImage() {
         
         } catch (err) {
             alert(err);
+        } finally {
+            setIsLoading(false);
         }
                 
     }
@@ -102,14 +105,21 @@ export default function UploadImage() {
 					<CircularProgress/>
 				</div>
             }
+            {genImage && genAudio && genText && 
+                <div className="result-card-container">
+                    <ContentCard
+                        imageSrc={genImage}
+                        audioSrc={genAudio}
+                        text={genText}
+                    />
+                </div>
+            }
             
-            <ContentCard
-                imageSrc={genImage}
-                audioSrc={genAudio}
-                text={genText}
-            />
 			
             <style jsx>{`
+                .result-card-container{
+                    margin-top: 10px;
+                }
                 .card {
                     width: 100%;
                     height: auto;

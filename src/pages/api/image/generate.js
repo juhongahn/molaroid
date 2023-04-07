@@ -9,26 +9,71 @@ export const config = {
   }
 }
 
+let postDirName;
+// multer 미들웨어 설정
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      // 이미지를 저장할 경로 지정
+      const postsDir = '/home/opc/moraloid/posts';
+      let dirNum = 1;
+      // 폴더의 마지막 숫자를 찾음
+      while (fs.existsSync(`${postsDir}/${dirNum}`)) {
+        dirNum++;
+      }
+      // 마지막 숫자보다 1 큰 경로를 만듦
+      const newDir = `${postsDir}/${dirNum}`;
+      postDirName = newDir;
+      fs.mkdirSync(newDir);
+      cb(null, newDir);
+    },
+    filename: function (req, file, cb) {
+      cb(null, 'input.jpg');
+    }
+});
+  
+const upload = multer({ storage: storage });
+
+
 export default async function handler(req, res) {
-  const postsDir = '/home/opc/moraloid/posts_test/1';
-  const boundary = 'myboundary';
-  res.setHeader('Content-Type', `multipart/mixed; boundary="${boundary}"`);
 
-  const inputImagePath = postsDir + '/input.jpg';
-  const outputAudioPath = postsDir + '/output.midi';
-  const outputTextPath = postsDir + '/output.txt';
+  await new Promise((resolve, reject) => {
+    upload.single('image')(req, res, function (err) {
+      if (err) {
+        console.log(err.message)
+        res.status(400).json({ error: err.message });
+        reject(err);
+        return;
+      }
+      resolve();
+    });
+});
 
-  const imageData = fs.readFileSync(inputImagePath);
-  const audioData = fs.readFileSync(outputAudioPath);
-  const textData = fs.readFileSync(outputTextPath, 'utf-8');
+  // Python 파일 실행
+  const pythonProcess = spawn('python', ['/home/opc/moraloid/server/moraloidCore.py']);
 
-  const response = {
-    image: imageData.toString('base64'),
-    audio: audioData.toString('base64'),
-    text: textData,
-  };
+  pythonProcess.on('exit', (code) => {
+    const inputImagePath = postDirName + '/input.jpg';
+    const outputAudioPath = postDirName + '/output.mp3';
+    const outputTextPath = postDirName + '/output.txt';
 
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(response));
+    const imageData = fs.readFileSync(inputImagePath);
+    const audioData = fs.readFileSync(outputAudioPath);
+    const textData = fs.readFileSync(outputTextPath, 'utf-8');
+  
+    const response = {
+      image: imageData.toString('base64'),
+      audio: audioData.toString('base64'),
+      text: textData,
+    };
+  
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(response));
+  })
+  
+  pythonProcess.stderr.on('data', (data) => {
+    console.error(`stderr: ${data}`);
+});
+
+  
 }
