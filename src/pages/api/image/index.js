@@ -15,7 +15,7 @@ export default function handler(req, res) {
         const inputImagePath = dirPath + '/input.jpg';
 
         const imageData = fs.readFileSync(inputImagePath);
-        const textData = fs.readFileSync(outputTextPath, 'utf-8');
+        //const textData = fs.readFileSync(outputTextPath, 'utf-8');
     
         const multiFiles = {
             image: imageData.toString('base64'),
