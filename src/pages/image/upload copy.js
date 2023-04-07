@@ -51,14 +51,34 @@ export default function UploadImage() {
             method: 'POST',
             body: formData,
         });
-
-        if (response.ok) {
-            const data = await response.json();
-            setGenImage(`data:image/jpeg;base64,${data.image}`);
-            setGenAudio(`data:audio/mpeg;base64,${data.audio}`);
-            setGenText(data.text);
-        } 
-        
+        .then(response => {
+            if (response.ok) { 
+				return response.text();
+            }
+            throw new Error('Network response was not ok.');
+          })
+          .then( data  => {
+		const boundary = '\r\n--myboundary\r\n';
+		const parts = data.split(boundary);
+		const inputImagePart = parts[1];
+		const outputAudioPart = parts[2];
+		const outputTextPart = parts[3];
+		console.log(inputImagePart);
+		console.log(outputAudioPart);
+		console.log(outputTextPart);
+		console.log(parts);	
+	
+		const inputImageBlob = new Blob([inputImagePart], {type: 'image/jpeg'});
+		const outputAudioBlob = new Blob([outputAudioPart], {type: 'audio/mpeg'});
+		const outputText = outputTextPart.trim();
+		const imageSrc = URL.createObjectURL(inputImageBlob);
+		const audioSrc = URL.createObjectURL(outputAudioBlob);
+		
+		setGenImage(imageSrc);
+          })
+          .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+          });
     }
 
     return (
@@ -94,9 +114,7 @@ export default function UploadImage() {
 					<CircularProgress/>
 				</div>
 			}
-			{genImage && <img src={genImage} />}
-			{genAudio && <img src={genAudio} />}
-			{genText && <img src={genText} />}
+			{genImage && <img src={genImage} width={100} />}
 			
             <style jsx>{`
                 .card {
