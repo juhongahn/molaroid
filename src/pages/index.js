@@ -5,10 +5,19 @@ import Container from '@mui/material/Container'
 import { useState, useEffect } from 'react';
 
 export default function Home() {
+  
+  const [cardDataObjArray, setCardDataObjArray] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch('/api/image');
-      console.log(response.json());  
+      if (response.ok) {
+        const data = await response.json();
+        setCardDataObjArray(...cardDataObjArray, data);
+      } else {
+        alert("데이터를 불러오는데 실패 했습니다");
+        window.location.reload();
+      }
     }
     fetchData();
   }, [])
@@ -22,20 +31,26 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {/* <Grid
-        container
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        mt={5}
-      >
-        <Grid item>
-          <ContentCard />
-        </Grid>
-      </Grid> */}
       <Container maxWidth="sm">
-        <ContentCard />
+
+        {cardDataObjArray.map((cardDataObj) => {
+          <div className='card-container'>
+            <ContentCard
+              imageSrc={cardDataObj.image}
+              audioSrc={cardDataObj.audio}
+              text={cardDataObj.text}
+            />
+          </div>
+      })}
+        
       </Container>
+
+      <style jsx>{`
+          .card-container {
+            margin-top: 20px;
+          }
+        
+        `}</style>
     </>
   )
 }

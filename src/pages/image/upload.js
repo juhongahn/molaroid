@@ -8,6 +8,8 @@ import ImagePreView from "@/components/image/ImagePreview";
 import ContentCard from "@/components/ContentCard";
 import Head from "next/head";
 
+const reg = /(gif|jpe?g|tiff?|png|webp|bmp)$/i;
+
 export default function UploadImage() {
 
 	const [files, setFiles] = useState([]);
@@ -22,6 +24,13 @@ export default function UploadImage() {
     
     const handleFileUpload = (event) => {
         const newFiles = event.target.files;
+        const fileExtension = newFiles[0].name.split('.')[1].toLowerCase();
+        
+        if (!fileExtension.match(reg)) {
+            alert("이미지 파일만 넣어주세요");
+            setFiles([]);
+            return;
+        }
         setFiles(newFiles);
     }
 
@@ -65,13 +74,14 @@ export default function UploadImage() {
                 setGenAudio(`data:audio/mpeg;base64,${data.audio}`);
                 setGenText(data.text);
             } else {
-                throw new Error("처리중 에러가 발생했습니다.")
+                throw new Error("처리중 에러가 발생했습니다.");
             } 
         
         } catch (err) {
             alert(err);
         } finally {
             setIsLoading(false);
+            setFiles([]);
         }
     }
 
