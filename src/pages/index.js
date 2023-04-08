@@ -13,7 +13,7 @@ export default function Home() {
       const response = await fetch('/api/image');
       if (response.ok) {
         const data = await response.json();
-        setCardDataObjArray(...cardDataObjArray, data);
+        setCardDataObjArray(data);
       } else {
         alert("데이터를 불러오는데 실패 했습니다");
         window.location.reload();
