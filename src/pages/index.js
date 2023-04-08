@@ -40,7 +40,14 @@ export default function Home({ cardObjArray }) {
 export async function getServerSideProps(context) {
 
   let cardObjArray;
-  const response = await fetch('http://130.162.135.161:3000/api/image');
+  const response = await fetch('http://130.162.135.161:3000/api/image',{
+    method: 'GET',    
+    headers: {
+          'Accept': 'application/json'
+        }
+    },
+
+  );
   if (response.ok) {
     const data = await response.json();
     cardObjArray = data;
