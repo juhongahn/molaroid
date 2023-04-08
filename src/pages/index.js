@@ -1,27 +1,8 @@
 import Head from 'next/head'
 import ContentCard from '@/components/ContentCard';
-import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container'
-import { useState, useEffect } from 'react';
 
-export default function Home() {
-  
-  const [cardDataObjArray, setCardDataObjArray] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch('/api/image');
-      if (response.ok) {
-        const data = await response.json();
-	console.log(data);
-        setCardDataObjArray(data);
-      } else {
-        alert("데이터를 불러오는데 실패 했습니다");
-        window.location.reload();
-      }
-    }
-    fetchData();
-  }, [])
+export default function Home({ cardObjArray }) {
   return (
     <>
       <Head>
@@ -34,15 +15,15 @@ export default function Home() {
       </Head>
       <Container maxWidth="sm">
 
-        {cardDataObjArray.length > 0 ? cardDataObjArray.map((cardDataObj) => {
-          <div className='card-container'>
+        {cardObjArray.length > 0? cardObjArray.map((cardObj, index) => ( 
+          <div className='card-container' key={index}>
             <ContentCard
-              imageSrc={cardDataObj.image}
-              audioSrc={cardDataObj.audio}
-              text={cardDataObj.text}
+              imageSrc={cardObj.image}
+              audioSrc={cardObj.audio}
+              text={cardObj.text}
             />
           </div>
-      }):''}
+      )):''}
         
       </Container>
 
@@ -54,4 +35,19 @@ export default function Home() {
         `}</style>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+
+  let cardObjArray;
+  const response = await fetch('http://130.162.135.161:3000/api/image');
+  if (response.ok) {
+    const data = await response.json();
+    cardObjArray = data;
+  } 
+  return {
+    props: {
+      cardObjArray: cardObjArray,
+    }, 
+  }
 }
