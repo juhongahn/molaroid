@@ -68,12 +68,11 @@ export default async function handler(req, res) {
   
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(response));
+    res.json(JSON.stringify(response));
   })
 
   pythonProcess.stderr.on('data', (data) => {
     console.error(`stderr: ${data}`);
 });
-
   
 }
