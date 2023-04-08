@@ -13,12 +13,8 @@ export default function Home() {
       const response = await fetch('/api/image');
       if (response.ok) {
         const data = await response.json();
-<<<<<<< HEAD
 	console.log(data);
-        setCardDataObjArray(...cardDataObjArray, data);
-=======
         setCardDataObjArray(data);
->>>>>>> 0d510ae948fcaf554210c247192c4199a49a3e66
       } else {
         alert("데이터를 불러오는데 실패 했습니다");
         window.location.reload();
@@ -38,7 +34,7 @@ export default function Home() {
       </Head>
       <Container maxWidth="sm">
 
-        {cardDataObjArray.map((cardDataObj) => {
+        {cardDataObjArray.length > 0 ? cardDataObjArray.map((cardDataObj) => {
           <div className='card-container'>
             <ContentCard
               imageSrc={cardDataObj.image}
@@ -46,7 +42,7 @@ export default function Home() {
               text={cardDataObj.text}
             />
           </div>
-      })}
+      }):''}
         
       </Container>
 
