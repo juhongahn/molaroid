@@ -38,8 +38,7 @@ export default function handler(req, res) {
     }
 
     const filesJson = JSON.stringify(files);
-    res.status(200);
-    res.setHeader('Content-Type', 'application/json');
+    //res.setHeader('Content-Type', 'application/json');
     res.setHeader('Cache-Control', 'max-age=3600');
-    res.json(filesJson);
+    res.status(200).json(filesJson);
 }
