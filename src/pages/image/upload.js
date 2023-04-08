@@ -1,8 +1,12 @@
+import {
+    Backdrop,
+    Container,
+    CircularProgress,
+} from "@mui/material";
 import { useState, useRef } from "react";
-import { Backdrop, Container } from "@mui/material";
 import ImagePreView from "@/components/image/ImagePreview";
-import CircularProgress from '@mui/material/CircularProgress';
 import ContentCard from "@/components/ContentCard";
+import Head from "next/head";
 
 export default function UploadImage() {
 
@@ -41,20 +45,19 @@ export default function UploadImage() {
     };
 
     const handleSubmit = async () => {
-
-		setIsLoading(true);
+		
         const formData = new FormData();
         if (files.length <= 0) {
             alert('사진을 업로드 해주세요');
             return;
         }
         formData.append('image', files[0]);
-
         try {
-            const response = await fetch('/api/image/generate', {
-                method: 'POST',
-                body: formData,
-            });
+                setIsLoading(true);
+                const response = await fetch('/api/image/generate', {
+                    method: 'POST',
+                    body: formData,
+                });
     
             if (response.ok) {
                 const data = await response.json();
@@ -73,6 +76,12 @@ export default function UploadImage() {
     }
 
     return (
+        <>
+        <Head>
+            <title>
+                이미지 업로드    
+            </title>
+        </Head>
         <Container maxWidth="sm">
 			<div className="card">
 				<div className="top">
@@ -89,7 +98,7 @@ export default function UploadImage() {
 						끌어다 놓거나
 						<span className="select" role="button" onClick={openFileUpload}>컴퓨터에서 선택</span>
 					</span>
-					<span className="on-drop">Drop images here</span>
+					<span className="on-drop">이미지를 여기다 놓으세요</span>
 					<input name="file" type="file" className="file"
 						onChange={handleFileUpload}
 						ref={fileInputRef}/>
@@ -108,133 +117,140 @@ export default function UploadImage() {
                     <CircularProgress color="inherit" />
                 </Backdrop>
             }
-            {genImage && genAudio && genText && 
-                <div className="result-card-container">
-                    <ContentCard
-                        imageSrc={genImage}
-                        audioSrc={genAudio}
-                        text={genText}
-                    />
-                </div>
+                {genImage && genAudio && genText &&
+                <>
+                    <hr/>
+                    <div className="result-card-container">
+                        <ContentCard
+                            imageSrc={genImage}
+                            audioSrc={genAudio}
+                            text={genText}
+                        />
+                    </div>
+                </>
             }
-            
 			
-            <style jsx>{`
-                .result-card-container{
-                    margin-top: 10px;
-                }
-                .card {
-                    width: 100%;
-                    height: auto;
-                    padding: 15px;
-                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-                    border-radius: 5px;
-                    overflow: hidden;
-                    background: #fafbff;
-                    margin-top: 10px;   
-                }
+                <style jsx>{`
+                    hr {
+                        margin: 30px 10px 30px 10px;
+                        background: #d5d5e1;
+                        height:1px;
+                        border:0;
+                    }
 
-                .card .top {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    width: 100%;
-                }
+                    .card {
+                        width: 100%;
+                        height: auto;
+                        padding: 15px;
+                        box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+                        border-radius: 5px;
+                        overflow: hidden;
+                        background: #fafbff;
+                        margin-top: 20px;   
+                    }
 
-                .card p {
-                    font-size: 0.9rem;
-                    font-weight: 600;
-                    color: #878a9a;
-                }
+                    .card .top {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        width: 100%;
+                    }
 
-                .card button {
-                    outline: 0;
-                    border: 0;
-                        -webkit-appearence: none;
-                    background: #3f50b5;
-                    color: #fff;
-                    border-radius: 4px;
-                    transition: 0.3s;
-                    cursor: pointer;
-                    font-weight: 400;
-                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-                    font-size: 0.8rem;
-                    padding: 8px 13px;
-                }
-                .card button:hover {
-                    opacity: 0.8;
-                }
+                    .card p {
+                        font-size: 0.9rem;
+                        font-weight: 600;
+                        color: #878a9a;
+                    }
 
-                .card button:active {
-                    transform: translateY(5px);
-                }
+                    .card button {
+                        outline: 0;
+                        border: 0;
+                            -webkit-appearence: none;
+                        background: #3f50b5;
+                        color: #fff;
+                        border-radius: 4px;
+                        transition: 0.3s;
+                        cursor: pointer;
+                        font-weight: 400;
+                        box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+                        font-size: 0.8rem;
+                        padding: 8px 13px;
+                    }
+                    .card button:hover {
+                        opacity: 0.8;
+                    }
 
-                .card .drag-area {
-                    width: 100%;
-                    height: 160px;
-                    border-radius: 5px;
-                    border: 2px dashed #d5d5e1;
-                    color: #c8c9dd;
-                    font-size: 0.9rem;
-                    font-weight: 500;
-                    position: relative;
-                    background: #dfe3f259;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    user-select: none;
-                    -webkit-user-select: none;
-                    margin-top: 10px;
-                }
+                    .card button:active {
+                        transform: translateY(5px);
+                    }
 
-                .card .drag-area .visible {
-                    font-size: 18px;
-                }
-                .card .select {
-                    color: #5256ad;
-                    margin-left: 5px;
-                    cursor: pointer;
-                    transition: 0.4s;
-                }
+                    .card .drag-area {
+                        width: 100%;
+                        height: 160px;
+                        border-radius: 5px;
+                        border: 2px dashed #d5d5e1;
+                        color: #c8c9dd;
+                        font-size: 0.9rem;
+                        font-weight: 500;
+                        position: relative;
+                        background: #dfe3f259;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        user-select: none;
+                        -webkit-user-select: none;
+                        margin-top: 10px;
+                    }
 
-                .card .select:hover {
-                    opacity: 0.6;
-                }
+                    .card .drag-area .visible {
+                        font-size: 18px;
+                    }
+                    .card .select {
+                        color: #5256ad;
+                        margin-left: 5px;
+                        cursor: pointer;
+                        transition: 0.4s;
+                    }
 
-                .card .container {
-                    width: 100%;
-                    height: auto;
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: flex-start;
-                    flex-wrap: wrap;
-                    overflow-y: auto;
-                    margin-top: 10px;
-                }
+                    .card .select:hover {
+                        opacity: 0.6;
+                    }
 
-                /* dragover class will used in drag and drop system */
-                .card .drag-area.dragover {
-                    background: rgba(0, 0, 0, 0.4);
-                }
+                    .card .container {
+                        width: 100%;
+                        height: auto;
+                        display: flex;
+                        justify-content: flex-start;
+                        align-items: flex-start;
+                        flex-wrap: wrap;
+                        overflow-y: auto;
+                        margin-top: 10px;
+                    }
 
-                .card .drag-area.dragover .on-drop {
-                    display: inline;
-                    font-size: 28px;
-                }
+                    /* dragover class will used in drag and drop system */
+                    .card .drag-area.dragover {
+                        background: rgba(0, 0, 0, 0.4);
+                    }
 
-                .card input,
-                .card .drag-area .on-drop, 
-                .card .drag-area.dragover .visible {
-                    display: none;
-                }
-				.spinner-container {
-					position: fixed;
-					top: 50%;
-					left: 50%;
-					transform: translate(-50%, -50%);
-				}
-                                
-            `}</style>
+                    .card .drag-area.dragover .on-drop {
+                        display: inline;
+                        font-size: 28px;
+                    }
+
+                    .card input,
+                    .card .drag-area .on-drop, 
+                    .card .drag-area.dragover .visible {
+                        display: none;
+                    }
+                    .spinner-container {
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                    }
+                                    
+                `}</style>
             </Container>
+        </>
     )
 }

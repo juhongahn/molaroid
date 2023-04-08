@@ -8,7 +8,7 @@ import {
 } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import { useRouter } from 'next/router';
 
 function LinkTab(props) {
