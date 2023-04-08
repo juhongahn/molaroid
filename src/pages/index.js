@@ -17,7 +17,14 @@ export default function Home() {
       );
       if (response.ok) {
         const data = await response.json();
-        setCardObjArray(data);
+        const srcArray = data.map((obj) => {
+          return {
+            imageSrc: `data:image/jpeg;base64,${obj.image}`,
+            audioSrc: `data:audio/mpeg;base64,${obj.audio}`,
+            text: obj.text,
+          }
+        });
+        setCardObjArray(srcArray);
       }
     }
     fetchData();
@@ -37,8 +44,8 @@ export default function Home() {
         {cardObjArray.length > 0? cardObjArray.map((cardObj, index) => ( 
           <div className='card-container' key={index}>
             <ContentCard
-              imageSrc={cardObj.image}
-              audioSrc={cardObj.audio}
+              imageSrc={cardObj.imageSrc}
+              audioSrc={cardObj.audioSrc}
               text={cardObj.text}
             />
           </div>
