@@ -53,7 +53,7 @@ export default async function handler(req, res) {
 
   pythonProcess.on('exit', (code) => {
     const inputImagePath = postDirName + '/input.jpg';
-    const outputAudioPath = postDirName + '/output.midi';
+    const outputAudioPath = postDirName + '/output.mp3';
     const outputTextPath = postDirName + '/output.txt';
 
     const imageData = fs.readFileSync(inputImagePath);

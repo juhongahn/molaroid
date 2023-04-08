@@ -41,6 +41,7 @@ export default function UploadImage() {
     };
 
     const handleSubmit = async () => {
+
 		setIsLoading(true);
         const formData = new FormData();
         if (files.length <= 0) {
@@ -69,7 +70,6 @@ export default function UploadImage() {
         } finally {
             setIsLoading(false);
         }
-                
     }
 
     return (
@@ -101,9 +101,12 @@ export default function UploadImage() {
 			</div>
 
 			{isLoading &&
-				<div className='spinner-container'>
-					<CircularProgress/>
-				</div>
+				<Backdrop
+                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                    open={isLoading}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
             }
             {genImage && genAudio && genText && 
                 <div className="result-card-container">
