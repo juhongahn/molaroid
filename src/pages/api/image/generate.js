@@ -33,7 +33,6 @@ const storage = multer.diskStorage({
   
 const upload = multer({ storage: storage });
 
-
 export default async function handler(req, res) {
 
   await new Promise((resolve, reject) => {
@@ -66,9 +65,7 @@ export default async function handler(req, res) {
       text: textData,
     };
   
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json');
-    res.json(JSON.stringify(response));
+    res.status(200).json(response);
   })
 
   pythonProcess.stderr.on('data', (data) => {

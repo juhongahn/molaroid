@@ -1,8 +1,27 @@
 import Head from 'next/head'
 import ContentCard from '@/components/ContentCard';
 import Container from '@mui/material/Container'
+import { useEffect, useState } from 'react';
+export default function Home() {
 
-export default function Home({ cardObjArray }) {
+  const [cardObjArray, setCardObjArray] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('/api/image',{
+        method: 'GET',    
+        headers: {
+              'Accept': 'application/json'
+            }
+        },
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setCardObjArray(data);
+      }
+    }
+    fetchData();
+  }, [])
   return (
     <>
       <Head>
@@ -26,7 +45,6 @@ export default function Home({ cardObjArray }) {
       )):''}
         
       </Container>
-
       <style jsx>{`
           .card-container {
             margin-top: 20px;
@@ -35,26 +53,4 @@ export default function Home({ cardObjArray }) {
         `}</style>
     </>
   )
-}
-
-export async function getServerSideProps(context) {
-
-  let cardObjArray;
-  const response = await fetch('http://130.162.135.161:3000/api/image',{
-    method: 'GET',    
-    headers: {
-          'Accept': 'application/json'
-        }
-    },
-
-  );
-  if (response.ok) {
-    const data = await response.json();
-    cardObjArray = data;
-  } 
-  return {
-    props: {
-      cardObjArray: cardObjArray,
-    }, 
-  }
 }
