@@ -28,8 +28,7 @@ export default function handler(req, res) {
             files.push(multiFileObj);
      });
     }
-
-    //const filesJson = JSON.stringify(files);
+    files.reverse();
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Cache-Control', 'max-age=3600');
     res.status(200).json(files);
