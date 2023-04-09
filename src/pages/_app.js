@@ -10,7 +10,9 @@ export default function App({ Component, pageProps }) {
             html, body{
               height: 100vh;
               padding: 0;
+              font-family: 'Do Hyeon', sans-serif;
             }
+            
           `}</style>
         </Layout>
     </>
