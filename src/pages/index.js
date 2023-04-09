@@ -30,7 +30,7 @@ export default function Main() {
                             ai가 만들어주는 글귀와 음악을 감상해 보세요.
                         </p>
                     </div>
-                    <Link href={'/'} style={{
+                    <Link href={'/main'} style={{
                         textDecoration: 'underline',
                         fontSize: '1.1rem'
                     }}>
