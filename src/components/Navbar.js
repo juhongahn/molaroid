@@ -50,7 +50,7 @@ export default function DenseAppBar() {
                         icon={<HomeIcon sx={{ fontSize: 35 }} />}
                         iconPosition="top"
                         label="홈"
-                        href="/"    
+                        href="/main"    
                     />
                     <LinkTab
                         icon={<CloudUploadIcon sx={{ fontSize: 35 }} />}
