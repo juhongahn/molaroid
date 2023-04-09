@@ -54,18 +54,20 @@ export default async function handler(req, res) {
     const inputImagePath = postDirName + '/input.jpg';
     const outputAudioPath = postDirName + '/output.mp3';
     const outputTextPath = postDirName + '/output.txt';
+    try {
+      const imageData = fs.readFileSync(inputImagePath);
+      const audioData = fs.readFileSync(outputAudioPath);
+      const textData = fs.readFileSync(outputTextPath, 'utf-8');
 
-    const imageData = fs.readFileSync(inputImagePath);
-    const audioData = fs.readFileSync(outputAudioPath);
-    const textData = fs.readFileSync(outputTextPath, 'utf-8');
-  
-    const response = {
-      image: imageData.toString('base64'),
-      audio: audioData.toString('base64'),
-      text: textData,
-    };
-  
-    res.status(200).json(response);
+      const response = {
+        image: imageData.toString('base64'),
+        audio: audioData.toString('base64'),
+        text: textData,
+      };
+      res.status(200).json(response);
+    } catch (err) {
+      return res.status(500).json({ error: '데이터 처리중 문제가 발생했습니다.' });
+    }
   })
 
   pythonProcess.stderr.on('data', (data) => {
