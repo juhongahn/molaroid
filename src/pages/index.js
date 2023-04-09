@@ -46,7 +46,7 @@ export default function Main() {
                     mt: '60px',
                 }}
             >
-                <Lottie loop animationData={lottieJson} play/>;
+                <Lottie loop animationData={lottieJson} play/>
             </Grid>
             </Grid>
                 <style global jsx>{`
