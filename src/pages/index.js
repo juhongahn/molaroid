@@ -2,11 +2,14 @@ import { Container, Grid } from "@mui/material"
 import Lottie from "react-lottie-player";
 import lottieJson from "../../public/main_lottie.json";
 import Link from "next/link";
+import Head from "next/head";
 
 export default function Main() {
-
-
     return (
+        <>
+        <Head>
+            <title>몰라로이드</title>
+        </Head>
         <Container>
             <Grid
                 container
@@ -46,21 +49,22 @@ export default function Main() {
                 <Lottie loop animationData={lottieJson} play/>;
             </Grid>
             </Grid>
-            <style global jsx>{`
-                body{
-                    background-color: #f5eee6;
-                }
+                <style global jsx>{`
+                    body{
+                        background-color: #f5eee6;
+                    }
 
-                h1{
-                    font-size: 4rem;
-                    margin-bottom: 0px;
-                }
-                p{
-                    font-size: 1.3rem;
+                    h1{
+                        font-size: 4rem;
+                        margin-bottom: 0px;
+                    }
+                    
+                    p{
+                        font-size: 1.3rem;
+                    }
 
-                }
-
-            `}</style>
-    </Container>
+                `}</style>
+            </Container>
+        </>
     )
 }
