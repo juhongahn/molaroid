@@ -11,7 +11,8 @@ export default function ContentCard(props) {
         component="img"
         height="300"
         image={props.imageSrc}
-        alt="Paella dish"
+        alt="업로드 이미지"
+        sx={{ objectFit: "scale-down" }}
       />
       <audio
         controls
@@ -29,6 +30,9 @@ export default function ContentCard(props) {
         .audio{
           width: 100%;
           background-color: #f1f3f4;
+        }
+        img {
+          object-fit: scale-down;
         }
         
         `}</style>
